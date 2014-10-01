@@ -76,7 +76,8 @@ angular.module('mbMapApp')
 
           var color, f, p, n, vertexIndex,
             radius = 200,
-            geometry  = new THREE.Geometry();
+            geometry  = new THREE.Geometry(),
+            mapGeometry = new THREE.Geometry();
 
           materials.lambert = new THREE.MeshLambertMaterial({
             color: 0xffffff,
@@ -102,6 +103,7 @@ angular.module('mbMapApp')
 
           // Build and add the icosahedron to the scene
           mapMesh = new THREE.Mesh( geometry, materials.wireframe); //materials[scope.materialType] );
+          mapMesh = new THREE.Mesh( mapGeometry, materials.wireframe); //materials[scope.materialType] );
 //          mapMesh.position.x = 0;
 //          mapMesh.rotation.x = 0;
           scene.add( mapMesh );
