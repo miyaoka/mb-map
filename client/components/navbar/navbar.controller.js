@@ -21,6 +21,7 @@ angular.module('mbMapApp')
       ].join('/')).
       then(function(data){
         Map.import(data);
+      }, function(){
       });
 
       File.load([

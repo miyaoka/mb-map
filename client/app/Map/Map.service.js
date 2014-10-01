@@ -17,7 +17,7 @@ angular.module('mbMapApp')
         i++;
         for(i; i <= limit; i++){
           items = lines[i].split(' ');
-          vertices.push([ items[0], items[2], items[1] ]);
+          vertices.push([ Number(items[0]), Number(items[2]), Number(items[1]) ]);
         }
 
         //faces
@@ -25,7 +25,7 @@ angular.module('mbMapApp')
         i++;
         for(i; i <= limit; i++){
           items = lines[i].split(' ');
-          faces.push([ items[4], items[5], items[6] ]);
+          faces.push([ parseInt(items[3]), parseInt(items[4]), parseInt(items[5]) ]);
         }
 
         Map.vertices = vertices;
