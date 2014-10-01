@@ -26,6 +26,26 @@ angular.module('mbMapApp')
           materials = {},
           controls;
 
+        var mapFaceColors = [
+          0x3e95ca, //0  rt_water
+          0x766669, //1  rt_mountain
+          0x7a8044, //2  rt_steppe
+          0x5b9536, //3  rt_plain
+          0xd8d8d8, //4  rt_snow
+          0x827251, //5  rt_desert
+          0x000000, //6
+          0x333333, //7  rt_bridge
+          0x4c5aad, //8  rt_river
+          0x486f2d, //9  rt_mountain_forest
+          0x486f2d, //10 rt_steppe_forest
+          0x486f2d, //11 rt_forest
+          0x486f2d, //12 rt_snow_forest
+          0x84694c, //13 rt_desert_forest
+          0x999999, //14
+          0x999999  //15
+        ];
+
+
         scope.init = function () {
 
           // Camera
@@ -61,7 +81,8 @@ angular.module('mbMapApp')
 
           materials.wireframe = new THREE.MeshBasicMaterial({
             color: 0x000000,
-            shading: THREE.FlatShading,
+            opacity: .05,
+//            shading: THREE.FlatShading,
             wireframe: true,
             transparent: true });
 
@@ -74,7 +95,7 @@ angular.module('mbMapApp')
 
 //          mapMesh = new THREE.Mesh( geometry, materials.wireframe); //materials[scope.materialType] );
           mapMesh = new THREE.Mesh(); //materials[scope.materialType] );
-          mapMesh.position.x = 150;
+//          mapMesh.position.x = 150;
 //          mapMesh.rotation.x = 0;
           scene.add( mapMesh );
 
@@ -198,13 +219,19 @@ angular.module('mbMapApp')
           });
           scope.map.faces.forEach(function(f){
             var face = new THREE.Face3(f[3], f[4], f[5]);
-            face.normal = new THREE.Vector3(0,0,1);
+            var color = new THREE.Color(mapFaceColors[f[0]]);
+            face.vertexColors = [color, color, color];
             geometry.faces.push(face);
           });
 //          geometry.computeFaceNormals();
 //          geometry.computeVertexNormals();
 
-          mapMesh = new THREE.Mesh( geometry, materials.wireframe);
+          mapMesh = THREE.SceneUtils.createMultiMaterialObject( geometry, [
+            new THREE.MeshBasicMaterial({
+              vertexColors: THREE.VertexColors
+            }),
+            materials.wireframe
+          ]);
 
           scene.add( mapMesh );
 
