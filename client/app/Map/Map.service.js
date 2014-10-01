@@ -2,9 +2,13 @@
 
 angular.module('mbMapApp')
   .factory('Map', function ($http) {
+    function lineToItems(line){
+      return line.replace(/^\s+|\s+$/g, '').split(/\s+/);
+    }
     var Map = {
       import: function (data) {
         var lines = data.split('\n');
+        var line;
         var vertices = [];
         var faces = [];
         var items = [];
@@ -16,16 +20,14 @@ angular.module('mbMapApp')
         limit = parseInt(lines[i]);
         i++;
         for(i; i <= limit; i++){
-          vertices.push(lines[i].split(' '));
+          vertices.push(lineToItems(lines[i]));
         }
-
         //faces
         limit = parseInt(lines[i]) + i;
         i++;
         for(i; i <= limit; i++){
-          faces.push(lines[i].split(' '));
+          faces.push(lineToItems(lines[i]));
         }
-
         Map.vertices = vertices;
         Map.faces = faces;
 

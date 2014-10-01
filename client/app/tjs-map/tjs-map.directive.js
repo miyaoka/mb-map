@@ -23,9 +23,9 @@ angular.module('mbMapApp')
           contH = scope.height,
           windowHalfX = contW / 2,
           windowHalfY = contH / 2,
-          materials = {};
+          materials = {},
+          controls;
 
-var controls
         scope.init = function () {
 
           // Camera
@@ -34,7 +34,6 @@ var controls
           camera.position.y = 500;
 
 
-           controls = new THREE.TrackballControls(camera);
 
           // Scene
           scene = new THREE.Scene();
@@ -88,6 +87,9 @@ var controls
 
           // element is provided by the angular directive
           element[0].appendChild( renderer.domElement );
+
+
+          controls = new THREE.TrackballControls(camera, element[0]);
 
 //          document.addEventListener( 'mousemove', scope.onDocumentMouseMove, false );
 
@@ -192,15 +194,15 @@ var controls
           geometry.faces = [];
 
           scope.map.vertices.forEach(function(v){
-            geometry.vertices.push(new THREE.Vector3(v[0], v[2], v[1]));
+            geometry.vertices.push(new THREE.Vector3(v[0], v[2], -v[1]));
           });
           scope.map.faces.forEach(function(f){
             var face = new THREE.Face3(f[3], f[4], f[5]);
             face.normal = new THREE.Vector3(0,0,1);
             geometry.faces.push(face);
           });
-          geometry.computeFaceNormals();
-          geometry.computeVertexNormals();
+//          geometry.computeFaceNormals();
+//          geometry.computeVertexNormals();
 
           mapMesh = new THREE.Mesh( geometry, materials.wireframe);
 
