@@ -1,18 +1,20 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
+<div
+  id="mapContainer"
+  tjs-map
+  map="map"
+  width="canvasWidth"
+  height="canvasHeight"
+  fillcontainer="dofillcontainer"
+  scale="scale"
+  material-type="materialType"
+></div>
+
+
 <div class="container">
   <div class="row">
     <div class="col-lg-12">
-      <div
-        id="webglContainer"
-        tjs-map
-        map="map"
-        width="canvasWidth"
-        height="canvasHeight"
-        fillcontainer="dofillcontainer"
-        scale="scale"
-        material-type="materialType"
-      ></div>
     </div>
   </div>
 </div>

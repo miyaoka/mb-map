@@ -16,16 +16,14 @@ angular.module('mbMapApp')
         limit = parseInt(lines[i]);
         i++;
         for(i; i <= limit; i++){
-          items = lines[i].split(' ');
-          vertices.push([ Number(items[0]), Number(items[2]), Number(items[1]) ]);
+          vertices.push(lines[i].split(' '));
         }
 
         //faces
         limit = parseInt(lines[i]) + i;
         i++;
         for(i; i <= limit; i++){
-          items = lines[i].split(' ');
-          faces.push([ parseInt(items[3]), parseInt(items[4]), parseInt(items[5]) ]);
+          faces.push(lines[i].split(' '));
         }
 
         Map.vertices = vertices;

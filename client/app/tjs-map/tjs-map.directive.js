@@ -25,15 +25,16 @@ angular.module('mbMapApp')
           windowHalfY = contH / 2,
           materials = {};
 
-
+var controls
         scope.init = function () {
 
           // Camera
-          camera = new THREE.PerspectiveCamera( 45, contW / contH, .1, 1000 );
-          camera.position.x = 1;
-          camera.position.y = 300;
-          camera.position.z = 10;
-          camera.lookAt(new THREE.Vector3(0,0,0))
+          camera = new THREE.PerspectiveCamera( 20, contW / contH, 1, 10000 );
+          camera.position.z = 500;
+          camera.position.y = 500;
+
+
+           controls = new THREE.TrackballControls(camera);
 
           // Scene
           scene = new THREE.Scene();
@@ -41,43 +42,8 @@ angular.module('mbMapApp')
           // Ligthing
           light = new THREE.DirectionalLight( 0xffffff );
           light.position.set( 0, 0, 1 );
-//          scene.add( light );
+          scene.add( light );
 
-          // Shadow
-          var canvas = document.createElement( 'canvas' );
-          canvas.width = 128;
-          canvas.height = 128;
-
-          // Render a 2d gradient to use as shadow
-          var context = canvas.getContext( '2d' );
-          var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
-
-          gradient.addColorStop( 0.1, 'rgba(200,200,200,1)' );
-          gradient.addColorStop( 1, 'rgba(255,255,255,1)' );
-
-          context.fillStyle = gradient;
-          context.fillRect( 0, 0, canvas.width, canvas.height );
-
-          var shadowTexture = new THREE.Texture( canvas );
-          shadowTexture.needsUpdate = true;
-
-          var shadowMaterial = new THREE.MeshBasicMaterial( {
-            map: shadowTexture
-          } );
-          var shadowGeo = new THREE.PlaneGeometry( 300, 300, 1, 1 );
-
-          // Apply the shadow texture to a plane
-          shadowMesh = new THREE.Mesh( shadowGeo, shadowMaterial );
-          shadowMesh.position.y = - 250;
-          shadowMesh.rotation.x = - Math.PI / 2;
-//          scene.add( shadowMesh );
-
-          var faceIndices = [ 'a', 'b', 'c', 'd' ];
-
-          var color, f, p, n, vertexIndex,
-            radius = 200,
-            geometry  = new THREE.Geometry(),
-            mapGeometry = new THREE.Geometry();
 
           materials.lambert = new THREE.MeshLambertMaterial({
             color: 0xffffff,
@@ -95,33 +61,35 @@ angular.module('mbMapApp')
           });
 
           materials.wireframe = new THREE.MeshBasicMaterial({
-            color: 'blue',
-//            shading: THREE.FlatShading,
-            wireframe: true
-//            transparent: true
-          });
-
-          // Build and add the icosahedron to the scene
-          mapMesh = new THREE.Mesh( geometry, materials.wireframe); //materials[scope.materialType] );
-          mapMesh = new THREE.Mesh( mapGeometry, materials.wireframe); //materials[scope.materialType] );
-//          mapMesh.position.x = 0;
-//          mapMesh.rotation.x = 0;
-          scene.add( mapMesh );
+            color: 0x000000,
+            shading: THREE.FlatShading,
+            wireframe: true,
+            transparent: true });
 
           //add AXIS Helper
           var axis = new THREE.AxisHelper(1000);
           scene.add(axis);
 
 
+          // Build and add the icosahedron to the scene
+
+//          mapMesh = new THREE.Mesh( geometry, materials.wireframe); //materials[scope.materialType] );
+          mapMesh = new THREE.Mesh(); //materials[scope.materialType] );
+          mapMesh.position.x = 150;
+//          mapMesh.rotation.x = 0;
+          scene.add( mapMesh );
+
+
+
+
           renderer = new THREE.WebGLRenderer( { antialias: true } );
-          renderer.setClearColor( 0xeeeeee );
+          renderer.setClearColor( 0xffffff );
           renderer.setSize( contW, contH );
-          renderer.shadowMapEnabled = true;
 
           // element is provided by the angular directive
           element[0].appendChild( renderer.domElement );
 
-          document.addEventListener( 'mousemove', scope.onDocumentMouseMove, false );
+//          document.addEventListener( 'mousemove', scope.onDocumentMouseMove, false );
 
           window.addEventListener( 'resize', scope.onWindowResize, false );
 
@@ -165,8 +133,7 @@ angular.module('mbMapApp')
         scope.resizeObject = function () {
 
 //          icosahedron.scale.set(scope.scale, scope.scale, scope.scale);
-          shadowMesh.scale.set(scope.scale, scope.scale, scope.scale);
-//          mapMesh.scale.set(scope.scale, scope.scale, scope.scale);
+//          shadowMesh.scale.set(scope.scale, scope.scale, scope.scale);
 
         };
 
@@ -182,9 +149,11 @@ angular.module('mbMapApp')
         // -----------------------------------
         scope.animate = function () {
 
-//          requestAnimationFrame( scope.animate );
+          requestAnimationFrame( scope.animate );
 
-//          scope.render();
+          controls.update();
+
+          scope.render();
 
         };
 
@@ -216,24 +185,29 @@ angular.module('mbMapApp')
 
         scope.$watch('map.vertices', function () {
 
-          mapMesh.geometry.vertices = [];
-          mapMesh.geometry.faces = [];
+          scene.remove( mapMesh );
+          var geometry = new THREE.Geometry();
+
+          geometry.vertices = [];
+          geometry.faces = [];
 
           scope.map.vertices.forEach(function(v){
-            mapMesh.geometry.vertices.push(new THREE.Vector3(v[0], v[1], v[2]));
+            geometry.vertices.push(new THREE.Vector3(v[0], v[2], v[1]));
           });
           scope.map.faces.forEach(function(f){
-            var face = new THREE.Face3(f[0], f[1], f[2]);
+            var face = new THREE.Face3(f[3], f[4], f[5]);
             face.normal = new THREE.Vector3(0,0,1);
-            mapMesh.geometry.faces.push(face);
+            geometry.faces.push(face);
           });
+          geometry.computeFaceNormals();
+          geometry.computeVertexNormals();
 
-          mapMesh.geometry.computeFaceNormals();
-          mapMesh.geometry.computeVertexNormals();
+          mapMesh = new THREE.Mesh( geometry, materials.wireframe);
+
+          scene.add( mapMesh );
 
 
           console.log(mapMesh);
-scope.render();
 
         });
 
