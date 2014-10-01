@@ -29,17 +29,17 @@ angular.module('mbMapApp')
         var mapFaceColors = [
           0x3e95ca, //0  rt_water
           0x766669, //1  rt_mountain
-          0x7a8044, //2  rt_steppe
-          0x5b9536, //3  rt_plain
+          0x8a9054, //2  rt_steppe
+          0x6ba546, //3  rt_plain
           0xd8d8d8, //4  rt_snow
-          0x827251, //5  rt_desert
+          0x928251, //5  rt_desert
           0x000000, //6
           0x333333, //7  rt_bridge
-          0x4c5aad, //8  rt_river
-          0x486f2d, //9  rt_mountain_forest
-          0x486f2d, //10 rt_steppe_forest
-          0x486f2d, //11 rt_forest
-          0x486f2d, //12 rt_snow_forest
+          0x4c7aad, //8  rt_river
+          0x488f2d, //9  rt_mountain_forest
+          0x488f2d, //10 rt_steppe_forest
+          0x488f2d, //11 rt_forest
+          0x488f2d, //12 rt_snow_forest
           0x84694c, //13 rt_desert_forest
           0x999999, //14
           0x999999  //15
@@ -215,7 +215,7 @@ angular.module('mbMapApp')
           geometry.faces = [];
 
           scope.map.vertices.forEach(function(v){
-            geometry.vertices.push(new THREE.Vector3(v[0], v[2], -v[1]));
+            geometry.vertices.push(new THREE.Vector3(v[0], v[2]*1.5, -v[1]));
           });
           scope.map.faces.forEach(function(f){
             var face = new THREE.Face3(f[3], f[4], f[5]);
